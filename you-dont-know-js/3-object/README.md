@@ -137,3 +137,197 @@
     console.log(regexLiteral instanceof Object); // true
     console.log(regex instanceof Object); // true
     ```
+# 3. 내용
+
+- 자바스크립트 엔진이 값을 저장하는 방식은, 엔진별로 다르다.
+- 프로퍼티 접근 (Property Access) :  `'.'` 연산자로 프로퍼티 접근
+    - identifier compatible 프로퍼티명이 와야 한다.
+        - 대소문자를 구별
+        - 유니코드 글자, $, _, 숫자(0-9)로 구성
+        - 숫자로 시작할 수는 없음
+        - 공백을 사용할 수 없음.
+    
+    ```jsx
+    /*
+    Property Access
+    - identifier compatible 프로퍼티명이 와야 한다
+      - 대소문자를 구별
+      - 유니코드 글자, $, _, 숫자(0-9)로 구성
+      - 숫자로 시작할 수는 없음
+    */
+    
+    const propertyObject = {
+      _hi: '_hi',
+      $hello: '_$hello',
+      asdf123: 'asdf123',
+      // bl ank: 'bl ank', error !
+      // *hi:'12',  // error!
+    };
+    ```
+    
+- 키 접근 (Key Access)
+    - UTF-8 / 유니코드 호환 문장려은 모두 프로퍼티명으로 쓸 수 있다.
+    
+    ```jsx
+    /*
+    Key Access
+    - UTF-8/유니코드 호환 문자열이면 모두 프로퍼티명으로 쓸 수 있다.
+    */
+    
+    const keyAccessObject = {};
+    keyAccessObject['123'] = '123'; // 숫자로 시작
+    keyAccessObject['*hi'] = '*hi'; // $나 _가 아닌 특수문자 사용
+    keyAccessObject['bl ank'] = 'bl ank'; // 공백 사용
+    ```
+    
+- 객체 **프로퍼티명은 항상 문자열**이다.
+    - 문자열 이외의 다른 primitive 값을 쓰면, 우선 문자열로 변환된다.
+        - 아래 예시의 `obj[obj]` 는 obj가 가리키는 `{ }` 를 문자열로 변환한 `[object Object]` 가 프로퍼티명으로 쓰인 것을 알 수 있다.
+            
+            이는 객체를 문자열 형태로 변환해주는 메서드인 `Object.prototype.toString()` 을 사용하였을 때,  `obj.toString()` 가 `[object Object]` 를 반환한데에 따른 것이다. 
+            
+    
+    ```jsx
+    /*
+    객체 프로퍼티명은 항상 문자열
+    */
+    
+    const obj = {};
+    
+    obj.true = 'true';
+    obj[100] = '100';
+    obj[obj] = 'obj';
+    
+    console.log(obj['true']); // true
+    console.log(obj['100']); // 100
+    console.log(obj['[object Object]']); // obj
+    ```
+    
+
+## 3.1 계산된 프로퍼티명
+
+- Computed Property Names
+    - 객체 리터럴 선언 시, 프로퍼티 이름 부분에 표현식을 넣고 `[ ]` 로 감싸는 것
+        
+        ```jsx
+        const prefix = 'api_';
+        const endpoint = {
+          [`${prefix}login`]: '/api/login',
+          [`${prefix}logout`]: '/api/logout',
+        };
+        
+        console.log(endpoint);
+        // { api_login: '/api/login', api_logout: '/api/logout' }
+        ```
+        
+    - ES6의 `Symbol`을 computed property name으로 사용할 수 있다.
+        - Symbol 값은 유일한 값이다. ⇒ **Symbol 값을 키로 갖는 프로퍼티는 다른 어떠한 프로퍼티와도 충돌하지 않는다.**
+        
+        ```jsx
+        /*
+        ES6 - Symbol
+        - symbol은 변경불가능한 primitive 타입이다.
+        - symbol 값은 유일하므로, symbol값을 키로 갖는 프로퍼티는 다른 프로퍼티와 충돌하지 않는다.
+        */
+        
+        const symbol1 = Symbol('symbol');
+        const symbol2 = Symbol('symbol');
+        
+        const symbolObject = {
+          [symbol1]: 'symbol1',
+          [symbol2]: 'symbol2',
+        };
+        
+        console.log(symbol1 === symbol2); // false
+        
+        console.log(symbolObject); // { [Symbol(symbol)]: 'symbol1', [Symbol(symbol)]: 'symbol2' }
+        console.log(symbolObject[symbol1]); // symbol1
+        console.log(symbolObject[symbol2]); // symbol2
+        ```
+        
+
+## 3.2 프로퍼티 vs 메서드
+
+저자는 객체 프로퍼티 값이 함수라고 해서, 그 함수를 '메서드'라고 부르는 것은 지나친 확대 해석이라고 말한다. 
+
+객체의 프로퍼티 값이 함수라는 건, 함수를 가리키는 레퍼런스가 하나 있을 뿐, 그 객체가 '소유한' 함수는 아니라고 얘기한다.
+
+```jsx
+function func() {
+  console.log('func');
+}
+
+const funcVar = func;
+
+const object = {
+  funcRef: func,
+};
+
+console.log(func); // [Function: func]
+console.log(funcVar); // [Function: func]
+console.log(object.funcRef); // [Function: func]
+```
+
+객체 리터럴로 함수 표현식을 선언하는 또한, 해당 함수 객체를 참조하는 레퍼런스가 생기는 것일 뿐이라고 말한다.
+
+```jsx
+const objLiteral = {
+  hi() {
+    console.log('hi');
+  },
+};
+
+const hiFuncVar = objLiteral.hi;
+
+console.log(hiFuncVar); // [Function: hi]
+console.log(objLiteral.hi); // [Function: hi]
+console.log(hiFuncVar === objLiteral.hi); // true
+```
+
+## 3.3 배열
+
+- 배열은 `숫자 인덱싱` 이라는 양수로 표기된 위치에 값을 저장한다.
+    
+    ```jsx
+    const arr = [, '1'];
+    
+    console.log(arr[1]); // '1'
+    console.log(arr.length); // 2
+    console.log(arr[0] === undefined); // true
+    ```
+    
+- **배열 자체도 객체**이다.
+    
+    `instanceof` 연산자로 arr의 프로토타입 체인은 Object의 프로토타입을 가리키는지 확인해보면, arr는 Object prototype에 속해있다는 것을 알 수 있다.
+    
+    ```jsx
+    const arr = [, '1'];
+    
+    console.log(arr instanceof Array); // true
+    console.log(arr instanceof Object); // true
+    ```
+    
+- 배열에 프로퍼티를 추가하는 것도 가능하다.
+    - 그러나, 배열 길이는 변하지 않는다.
+    
+    ```jsx
+    const arr = [, '1'];
+    
+    console.log(arr.length); // 2
+    
+    arr.func = function () {
+      return 'func';
+    };
+    
+    console.log(arr); // [ <1 empty item>, '1', func: [Function (anonymous)] ]
+    console.log(arr.length); // 2
+    ```
+    
+- 배열에 프로퍼티르 추가할 때, 숫자와 유사하면 숫자 인덱스로 잘못 해석되어 배열의 내용이 달라질 수 있다.
+    
+    ```jsx
+    const array = ['a', 'b', 'c'];
+    array['3'] = 'd';
+    console.log(array.length); // 4
+    console.log(array[3]); // 'd'
+    ```
