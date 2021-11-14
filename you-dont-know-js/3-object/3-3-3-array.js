@@ -3,7 +3,7 @@ console.log(arr[1]); // '1'
 console.log(arr.length); // 2
 console.log(arr[0] === undefined); // true
 
-/* 배열에 프로퍼티를 추가하는 것도 가능하다. */
+/* 배열 자체도 객체이다. */
 console.log(arr instanceof Array); // true
 console.log(arr instanceof Object); // true
 
