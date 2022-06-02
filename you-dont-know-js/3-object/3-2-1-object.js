@@ -7,8 +7,22 @@ console.log(typeof stringObject); // object
 console.log(stringPrimitive instanceof String); // false
 console.log(stringObject instanceof String); // true
 
+
+/**
+ * 자동 강제 변환 예시
+ * - 자바스크립트 엔진이 stringPrimitive를 String 객체로 자동 강제 변환한다.
+ */
+
+// String
 console.log(stringPrimitive.substring(6)); // primitive
 console.log(stringPrimitive.length); // 16
+
+// Number
+console.log(23.123.toFixed(2)); // 23.12
+
+// Boolean
+const x = false;
+console.log(x.valueOf()) // false
 
 /*
 Objects, Arrays, Function, RegExps는 리터럴/생성자와 관계없이 모두 객체

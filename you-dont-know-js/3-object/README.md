@@ -35,7 +35,7 @@
     - string
     - object
     - symbol (ES6에서 추가)
-- Simple Primitive
+- Simple Primitive (단순 원시 타입)
     - null, undefined, boolean, number, string
     - `typeof null` 의 반환값은 'object'이지만, 이는 언어 자체의 버그이다. null은 객체가 아니다.
         
@@ -44,7 +44,7 @@
         'object'
         ```
         
-- Complex Primitive
+- Complex Primitive (복합 원시 타입)
     - 객체 하위 타입(Sub Type)
     - function이 객체 하위 타입이다.
     - 자바스크립트에서 `함수는 일급객체`이다.
@@ -65,7 +65,7 @@
     - Date
     - RegExp
     - Error
-- 내장 객체는 **생성자(Constructor)**로 사용되어, 하위 타입의 **새 객체**를 생성한다.
+- 내장 객체는 **생성자(Constructor)** 로 사용되어, 하위 타입의 **새 객체**를 생성한다.
     
     `String` 을 예로 들어 보자.
     
@@ -97,18 +97,26 @@
     ```
     
 - 자동 강제 변환
-    - 리터럴 형식으로 만든 primitive value는 객체가 아니고, 불변(immutable)하다.
+    - 리터럴 형식으로 만든 string, boolean, number는 객체가 아니고, 불변(immutable)하다.
         
-        하지만, 자바스크립트 엔진이 상황에 맞게 primitive value를 String 객체로 자동변환해주므로, String의 메서드를 사용할 수 있다. 
+      하지만, 자바스크립트 엔진이 상황에 맞게 primitive value를 String 객체로 자동변환해주므로, String의 메서드를 사용할 수 있다. 
         
-        ```jsx
-        const stringPrimitive = 'string primitive';
+      ```jsx
+      const stringPrimitive = 'string primitive';
+      
+      // String
+      console.log(stringPrimitive.substring(6)); // primitive
+      console.log(stringPrimitive.length); // 16
+
+      // Number
+      console.log(23.123.toFixed(2)); // 23.12
+
+      // Boolean
+      const x = false;
+      console.log(x.valueOf()) // false
+      ```
         
-        console.log(stringPrimitive.substring(6)); // primitive
-        console.log(stringPrimitive.length); // 16
-        ```
-        
-- Objects, Arrays, Function, RegExps는 리터럴/생성자와 관계없이 모두 객체이다.
+- Objects, Arrays, Function, RegExps는 리터럴/생성자와 관계없이 모두 `객체`이다.
     
     ```jsx
     const objectLiteral = { num: 1 };
@@ -137,6 +145,18 @@
     console.log(regexLiteral instanceof Object); // true
     console.log(regex instanceof Object); // true
     ```
+
+- null과 undefined는 객체 래퍼 형식이 없다.
+- Date는 리터럴 형식이 없으므로, 반드시 생성자 형식으로 생성해야 한다.
+  ```js
+  let today = new Date()
+  ```
+
+### 정리
+- 내장 객체는 생성자로 사용되며, 새 객체를 생성한다.
+- 일부 primitive value는 자동 강제 변환이 된다.
+  - 자동 강제 변환이 되는 것 : string, number, boolean
+
 # 3. 내용
 
 - 자바스크립트 엔진이 값을 저장하는 방식은, 엔진별로 다르다.
